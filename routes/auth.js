@@ -24,8 +24,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Setup Initial Admin
-router.post('/setup', async (req, res) => {
+// Setup Initial Admin (Run this once to create admin user)
+router.get('/setup', async (req, res) => {
   try {
     const adminExists = await User.findOne({ username: 'admin' });
     if (adminExists) return res.status(400).json({ message: 'Admin already exists' });
