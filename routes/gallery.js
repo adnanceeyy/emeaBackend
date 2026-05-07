@@ -42,8 +42,8 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
   try {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     
-    // Construct the URL (assuming backend is at port 5000)
-    const mediaUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    // Construct the URL dynamically based on current host
+    const mediaUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     const type = req.file.mimetype.startsWith('video') ? 'video' : 'image';
     
     const newMedia = new Gallery({
