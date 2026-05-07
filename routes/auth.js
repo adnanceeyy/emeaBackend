@@ -24,11 +24,14 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Setup Initial Admin (Run this once to create admin user)
+// Admin Setup (Initial Creation)
 router.get('/setup', async (req, res) => {
   try {
-    const adminExists = await User.findOne({ username: 'admin' });
-    if (adminExists) return res.status(400).json({ message: 'Admin already exists' });
+    // Check if ANY admin already exists
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists) {
+      return res.status(403).json({ message: 'Security Alert: Administrator already initialized. This route is now locked.' });
+    }
 
     const hashedPassword = await bcrypt.hash('admin123', 10);
     const admin = new User({
@@ -38,9 +41,9 @@ router.get('/setup', async (req, res) => {
     });
     
     await admin.save();
-    res.json({ message: 'Admin user created' });
+    res.json({ message: 'Admin account created successfully. Use: admin / admin123' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error during setup' });
   }
 });
 
